@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="感知机单层感知机1.定义感知机接收多个信号，输出一个信号，其取值只有(0&#x2F;1)之分。 其中包括输入信号x，输出信号y，权重ω和阈值θ（偏置b）。  权重越大，对应该权重的信号的重要性就越高。  请注意，偏置和权重的作用是不一样的。 具体来说，ω1和ω2是控制输入信号重要性的参数，而偏置b是调整神经元被激活的容易程度的参数。 2.简单逻辑电路 与门  123456789def AND(x1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="感知机">
+<meta property="og:url" content="http://pilgrimag.github.io/2023/07/02/%E6%84%9F%E7%9F%A5%E6%9C%BA/index.html">
+<meta property="og:site_name" content="思忖的小窝">
+<meta property="og:description" content="感知机单层感知机1.定义感知机接收多个信号，输出一个信号，其取值只有(0&#x2F;1)之分。 其中包括输入信号x，输出信号y，权重ω和阈值θ（偏置b）。  权重越大，对应该权重的信号的重要性就越高。  请注意，偏置和权重的作用是不一样的。 具体来说，ω1和ω2是控制输入信号重要性的参数，而偏置b是调整神经元被激活的容易程度的参数。 2.简单逻辑电路 与门  123456789def AND(x1">
+<meta property="og:locale">
+<meta property="og:image" content="http://pilgrimag.github.io/img/404.jpg">
+<meta property="article:published_time" content="2023-07-01T16:52:28.000Z">
+<meta property="article:modified_time" content="2023-07-01T17:26:19.791Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="deep learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://pilgrimag.github.io/img/404.jpg">
+
+
+<title >感知机</title>
+
+<!-- Favicon -->
+
+    <link href='/img/favicon.ico?v=2.0.3' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/img/favicon.ico?v=2.0.3' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+    <link href='/img/apple-touch-icon.png?v=2.0.3' rel='apple-touch-icon' sizes='180x180' ></link>
+
+
+    <link href='/site.webmanifest' rel='manifest' ></link>
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"pilgrimag.github.io","author":"John Doe","root":"/","typed_text":["A Fish","A Student"],"theme_version":"2.0.3","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/favicon.ico","icon16":"/img/favicon.ico","icon32":"/img/favicon.ico","appleTouchIcon":"/img/apple-touch-icon.png","webmanifest":"/site.webmanifest","visibilitychange":true,"hidden":"failure.ico","showText":"(/≧▽≦/)咦！又好了！","hideText":"(●—●)喔哟，崩溃啦！"},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":true,"title":"default","height_limit":200}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2023-07-02 01:26:19"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/css/index.css?v=2.0.3" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+ 
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" data-scroll-container style="opacity: 0">
+          <div data-scroll-section id="content" class="trm-scroll-section">
+
+            <div class="locomotive-scroll__sticky-target" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none;"></div>
+
+            <!-- top bar -->
+            <header class="trm-top-bar" data-scroll data-scroll-sticky data-scroll-target=".locomotive-scroll__sticky-target" data-scroll-offset="-10">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/img/favicon.ico">
+    
+    
+        <div class="trm-logo-text">
+            思<span>忖</span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/archives/" target="">
+                    archives
+                </a>
+                
+                <ul>
+                    
+                    <li>
+                        <a  href="/categories/" target="">
+                            categories
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a  href="/tags/" target="">
+                            tags
+                        </a>
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/about/" target="">
+                    about
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner" data-scroll data-scroll-direction="vertical">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" data-scroll data-scroll-direction="vertical" data-scroll-speed="-3" src="/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container" data-scroll data-scroll-direction="vertical" data-scroll-speed="0">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            感知机
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2023
+                                    </span
+                                ></li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <a href="#about-triger" data-scroll-to="#about-triger" data-scroll-offset="-130" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </a>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div id="page-sidebar" class="col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    
+
+<div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card" data-scroll data-scroll-repeat data-scroll-sticky data-scroll-target=".locomotive-scroll__sticky-target" data-scroll-offset="60"> 
+    
+        <div class="trm-user-tabs" id="sidebar-tabs">
+           <div class="trm-tabs-nav trm-mb-40" id="trm-tabs-nav">
+                <div data-to="tabs-user" class="trm-tabs-nav-item">
+                    <i class="iconfont fas fa-user-alt"></i>
+                </div>
+                <div data-to="tabs-toc" class="trm-tabs-nav-item active">
+                    <i class="iconfont fas fa-th-list"></i>
+                </div>
+           </div>
+            <div name="tabs-user" class="trm-tabs-item">
+                <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/img/avatar1.jpg">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        思忖
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+                <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/pilgrimag" title="github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+                <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                冰岛
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                19
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                城市:
+            </div>
+            <div class="trm-label trm-label-light">
+                武汉
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+                
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:admin@1803578570@qq.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+            </div>
+            <div name="tabs-toc" class="trm-tabs-item active">
+                <div class="post-toc">
+    <ol class="toc"><li class="toc-item toc-level-1"><a rel="nofollow" class="toc-link" href="#感知机"  data-scroll-to="#感知机"><span class="toc-number">1.</span> <span class="toc-text">感知机</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a rel="nofollow" class="toc-link" href="#单层感知机"  data-scroll-to="#单层感知机"><span class="toc-number">1.1.</span> <span class="toc-text">单层感知机</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a rel="nofollow" class="toc-link" href="#1-定义"  data-scroll-to="#1-定义"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.定义</span></a></li><li class="toc-item toc-level-3"><a rel="nofollow" class="toc-link" href="#2-简单逻辑电路"  data-scroll-to="#2-简单逻辑电路"><span class="toc-number">1.1.2.</span> <span class="toc-text">2.简单逻辑电路</span></a></li><li class="toc-item toc-level-3"><a rel="nofollow" class="toc-link" href="#3-感知机的局限性"  data-scroll-to="#3-感知机的局限性"><span class="toc-number">1.1.3.</span> <span class="toc-text">3.感知机的局限性</span></a></li></ol></li><li class="toc-item toc-level-2"><a rel="nofollow" class="toc-link" href="#多层感知机"  data-scroll-to="#多层感知机"><span class="toc-number">1.2.</span> <span class="toc-text">多层感知机</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a rel="nofollow" class="toc-link" href="#1-多层感知机组合异或门"  data-scroll-to="#1-多层感知机组合异或门"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.多层感知机组合异或门</span></a></li></ol></li></ol></li></ol>
+</div>
+            </div>
+        </div>
+    
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div id="page-content" class="col-lg-8">
+                <div class="trm-content" id="trm-content">
+                    <div data-scroll data-scroll-repeat data-scroll-offset="500" id="about-triger"></div>
+
+                    <div id="post-info" class="row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            07/02
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            00:52
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            John Doe
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <h1 id="感知机"><a href="#感知机" class="headerlink" title="感知机"></a>感知机</h1><h2 id="单层感知机"><a href="#单层感知机" class="headerlink" title="单层感知机"></a>单层感知机</h2><h3 id="1-定义"><a href="#1-定义" class="headerlink" title="1.定义"></a>1.定义</h3><p>感知机接收多个信号，输出一个信号，其取值只有(0&#x2F;1)之分。 其中包括输入信号x，输出信号y，权重ω和阈值θ（偏置b）。 </p>
+<p>权重越大，对应该权重的信号的重要性就越高。</p>
+<p><img src="data:image/png;base64,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" loading="lazy" onerror='this.onerror=null;this.src="/img/404.jpg"'></p>
+<p>请注意，偏置和权重的作用是不一样的。</p>
+<p>具体来说，ω1和ω2是<strong>控制输入信号重要性</strong>的参数，而偏置b是<strong>调整神经元被激活的容易程度</strong>的参数。</p>
+<h3 id="2-简单逻辑电路"><a href="#2-简单逻辑电路" class="headerlink" title="2.简单逻辑电路"></a>2.简单逻辑电路</h3><ul>
+<li>与门</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">AND</span>(<span class="params">x1, x2</span>):</span><br><span class="line">    x = np.array([x1, x2])</span><br><span class="line">    w = np.array([<span class="number">0.5</span>, <span class="number">0.5</span>])</span><br><span class="line">    b = -<span class="number">0.7</span></span><br><span class="line">    tmp = np.<span class="built_in">sum</span>(w * x) + b</span><br><span class="line">    <span class="keyword">if</span> tmp &lt;= <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">elif</span> tmp &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>与非门</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">NAND</span>(<span class="params">x1, x2</span>):</span><br><span class="line">    x = np.array([x1, x2])</span><br><span class="line">    w = np.array([-<span class="number">0.5</span>, -<span class="number">0.5</span>])</span><br><span class="line">    b = <span class="number">0.7</span></span><br><span class="line">    tmp = np.<span class="built_in">sum</span>(w * x) + b</span><br><span class="line">    <span class="keyword">if</span> tmp &lt;= <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">elif</span> tmp &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>或门</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">OR</span>(<span class="params">x1, x2</span>):</span><br><span class="line">    x = np.array([x1, x2])</span><br><span class="line">    w = np.array([<span class="number">0.5</span>, <span class="number">0.5</span>])</span><br><span class="line">    b = -<span class="number">0.2</span></span><br><span class="line">    tmp = np.<span class="built_in">sum</span>(w * x) + b</span><br><span class="line">    <span class="keyword">if</span> tmp &lt;= <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">elif</span> tmp &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-感知机的局限性"><a href="#3-感知机的局限性" class="headerlink" title="3.感知机的局限性"></a>3.感知机的局限性</h3><p>感知机的局限性就在于<strong>它只能表示由一条直线分割的空间</strong>，而无法表示曲线。</p>
+<p>由曲线分割的空间叫作<strong>非线性</strong>空间，由直线分割的空间叫作<strong>线性</strong>空间。</p>
+<p>单层感知机无法分离非线性空间。</p>
+<hr>
+<h2 id="多层感知机"><a href="#多层感知机" class="headerlink" title="多层感知机"></a>多层感知机</h2><h3 id="1-多层感知机组合异或门"><a href="#1-多层感知机组合异或门" class="headerlink" title="1.多层感知机组合异或门"></a>1.多层感知机组合异或门</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">XOR</span>(<span class="params">x1, x2</span>):</span><br><span class="line">    s1 = NAND(x1, x2)</span><br><span class="line">    s2 = OR(x1, x2)</span><br><span class="line">    y = AND(s1, s2)</span><br><span class="line">    <span class="keyword">return</span> y</span><br></pre></td></tr></table></figure>
+
+
+</article>
+    
+    
+</div>
+<div id="post-next-prev" class="row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el" data-scroll="" data-scroll-offset="40">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/2023/07/02/python%E5%9F%BA%E7%A1%80/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">python基础</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>23/07/02</li>
+                <li>00:51</li>
+                <li>深度学习</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-scroll-animation" data-scroll data-scroll-offset="50">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2023- 2023</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">思忖</span>
+        </div>
+    
+
+    
+        <div class="trm-footer-item">
+            <span>
+                由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v6.3.0
+            </span>
+            <span class="footer-separator" data-separator=" | "></span>
+            <span> 
+                主题 - 
+                <a rel="noopener" href='https://github.com/MaLuns/hexo-theme-async' target='_blank'>Async</a>
+                v2.0.3
+            </span>
+        </div>
+      
+
+    
+        <div class="trm-footer-item">
+            博客已在代码中扑腾 <span id="since" class="trm-accent-color"></span> 天
+        </div>
+     
+
+    
+        <div class="trm-footer-item">
+            最想戒掉的是执念
+        </div>
+     
+</footer>
+
+<script>
+    function show_date_time () {
+        var BirthDay = new Date("03/17/2023 12:00:00");
+        var today = new Date();
+        var timeold = (today.getTime() - BirthDay.getTime());
+        var msPerDay = 24 * 60 * 60 * 1000
+        var day = Math.floor(timeold / msPerDay)
+        since.innerHTML = day
+    }
+    show_date_time()
+</script>
+ 
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            <div class="trm-fixed-container" data-scroll data-scroll-sticky data-scroll-target=".locomotive-scroll__sticky-target" data-scroll-offset="-10">
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+          </div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+
+  </div>
+  <!-- app wrapper end -->
+
+  
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/js/plugins/typing.js?v=2.0.3"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+
+    <!-- Service Worker -->
+    
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/js/main.js?v=2.0.3"></script>
+
+</body>
+
+</html>
