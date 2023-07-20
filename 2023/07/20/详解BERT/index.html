@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="x5-fullscreen" content="true">
+<meta name="full-screen" content="yes">
+<meta name="theme-color" content="#317EFB" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
+<meta name="description" content="Bert多层transformer的双向两阶段式语言模型BERT模型的全称是：BidirectionalEncoder Representations from Transformer。从名字中可以看出，BERT模型的目标是利用大规模无标注语料训练、获得文本的包含丰富语义信息的Representation，即：文本的语义表示，然后将文本的语义表示在特定NLP任务中作微调，最终应用于该NLP任务。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="详解BERT">
+<meta property="og:url" content="http://pilgrimag.github.io/2023/07/20/%E8%AF%A6%E8%A7%A3BERT/index.html">
+<meta property="og:site_name" content="思忖的小窝">
+<meta property="og:description" content="Bert多层transformer的双向两阶段式语言模型BERT模型的全称是：BidirectionalEncoder Representations from Transformer。从名字中可以看出，BERT模型的目标是利用大规模无标注语料训练、获得文本的包含丰富语义信息的Representation，即：文本的语义表示，然后将文本的语义表示在特定NLP任务中作微调，最终应用于该NLP任务。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2023-07-20T06:27:33.000Z">
+<meta property="article:modified_time" content="2023-07-20T07:31:25.600Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="deep learning">
+<meta name="twitter:card" content="summary">
+
+
+<title >详解BERT</title>
+
+<!-- Favicon -->
+
+    <link href='/img/favicon.ico?v=2.0.3' rel='icon' type='image/png' sizes='16x16' ></link>
+
+
+    <link href='/img/favicon.ico?v=2.0.3' rel='icon' type='image/png' sizes='32x32' ></link>
+
+
+    <link href='/img/apple-touch-icon.png?v=2.0.3' rel='apple-touch-icon' sizes='180x180' ></link>
+
+
+    <link href='/site.webmanifest' rel='manifest' ></link>
+
+
+<!-- Plugin -->
+
+
+
+
+    
+<link rel="stylesheet" href="/css/plugins/bootstrap.row.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+
+    
+<link rel="stylesheet" href="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.css">
+
+    
+    
+
+
+
+
+<!-- Icon -->
+
+    
+<link rel="stylesheet" href="/css/plugins/font-awesome.min.css">
+
+
+
+
+<!-- Variable -->
+<script>window.ASYNC_CONFIG = {"hostname":"pilgrimag.github.io","author":"John Doe","root":"/","typed_text":["A Fish","A Student"],"theme_version":"2.0.3","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/favicon.ico","icon16":"/img/favicon.ico","icon32":"/img/favicon.ico","appleTouchIcon":"/img/apple-touch-icon.png","webmanifest":"/site.webmanifest","visibilitychange":true,"hidden":"failure.ico","showText":"(/≧▽≦/)咦！又好了！","hideText":"(●—●)喔哟，崩溃啦！"},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":true,"title":"default","height_limit":200}};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2023-07-20 15:31:25"};</script>
+
+<!-- Theme mode css -->
+<link data-swup-theme rel="stylesheet" href="/css/index.css?v=2.0.3" id="trm-switch-style">
+<script>
+    let defaultMode = ASYNC_CONFIG.theme.default !=='auto' ?  ASYNC_CONFIG.theme.default : (window.matchMedia("(prefers-color-scheme: light)").matches ? 'style-light' : 'style-dark')
+    let catchMode = localStorage.getItem('theme-mode') || defaultMode;
+    let type = catchMode === 'style-dark' ? 'add' : 'remove';
+    document.documentElement.classList[type]('dark')
+</script>
+
+<!-- CDN -->
+
+
+    
+    
+
+
+
+<!-- Site Analytics -->
+ 
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+
+  <!-- app wrapper -->
+  <div class="trm-app-frame">
+
+    <!-- page preloader -->
+    <div class="trm-preloader">
+    <div class="trm-holder">
+        <div class="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
+    <!-- page preloader end -->
+
+    <!-- change mode preloader -->
+    <div class="trm-mode-swich-animation-frame">
+    <div class="trm-mode-swich-animation">
+        <i class="i-sun"><i class="iconfont far fa-sun"></i></i>
+        <div class="trm-horizon"></div>
+        <i class="i-moon"><i class="iconfont far fa-moon"></i></i>
+    </div>
+</div>
+    <!-- change mode preloader end -->
+
+      <!-- scroll container -->
+      <div id="trm-dynamic-content" class="trm-swup-animation">
+        <div id="trm-scroll-container" class="trm-scroll-container" data-scroll-container style="opacity: 0">
+          <div data-scroll-section id="content" class="trm-scroll-section">
+
+            <div class="locomotive-scroll__sticky-target" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none;"></div>
+
+            <!-- top bar -->
+            <header class="trm-top-bar" data-scroll data-scroll-sticky data-scroll-target=".locomotive-scroll__sticky-target" data-scroll-offset="-10">
+	<div class="container">
+		<div class="trm-left-side">
+			<!-- logo -->
+<a href="/" class="trm-logo-frame trm-anima-link">
+    
+        <img alt="logo" src="/img/favicon.ico">
+    
+    
+        <div class="trm-logo-text">
+            思<span>忖</span>
+        </div>
+    
+</a>
+<!-- logo end -->
+		</div>
+		<div class="trm-right-side">
+			<!-- menu -->
+<div class="trm-menu">
+    <nav>
+        <ul>
+            
+            <li class="menu-item-has-children ">
+                <a  href="/" target="">
+                    home
+                </a>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/archives/" target="">
+                    archives
+                </a>
+                
+                <ul>
+                    
+                    <li>
+                        <a  href="/categories/" target="">
+                            categories
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a  href="/tags/" target="">
+                            tags
+                        </a>
+                    </li>
+                    
+                </ul>
+                
+            </li>
+            
+            <li class="menu-item-has-children ">
+                <a data-no-swup href="/about/" target="">
+                    about
+                </a>
+                
+            </li>
+            
+        </ul>
+    </nav>
+</div>
+<!-- menu end -->
+			
+    <!-- mode switcher place -->
+    <div class="trm-mode-switcher-place">
+        <div class="trm-mode-switcher">
+            <i class="iconfont far fa-sun"></i>
+            <input class="tgl tgl-light" id="trm-swich" type="checkbox">
+            <label class="trm-swich" for="trm-swich"></label>
+            <i class="iconfont far fa-moon"></i>
+        </div>
+    </div>
+    <!-- mode switcher place end -->
+
+			
+    
+        <a id="trm-search-btn" class="trm-search-btn" data-no-swup target="_blank" href="https://www.google.com/search?q=site:https://pilgrimag.github.io/">
+            <i class="iconfont fas fa-search"></i>
+        </a>
+     
+
+		</div>
+		<div class="trm-menu-btn">
+			<span></span>
+		</div>
+	</div>
+</header>
+            <!-- top bar end -->
+
+            <!-- body -->
+            
+<div class="trm-content-start">
+    <!-- banner -->
+    <div class="trm-banner" data-scroll data-scroll-direction="vertical">
+    
+    <!-- banner cover -->
+    <img style="object-position:top;object-fit:cover;" alt="banner" class="trm-banner-cover" data-scroll data-scroll-direction="vertical" data-scroll-speed="-3" src="/img/banner.png">
+    <!-- banner cover end -->
+    
+
+    <!-- banner content -->
+    <div class="trm-banner-content trm-overlay">
+        <div class="container" data-scroll data-scroll-direction="vertical" data-scroll-speed="0">
+            <div class="row">
+                
+                <div class="col-lg-4"></div>
+                
+                <div class="col-lg-8">
+
+                    <!-- banner title -->
+                    <div class="trm-banner-text ">
+                        <div class="trm-label trm-mb-20">
+                            NEWS LETTER
+                        </div>
+                        <h1 class="trm-mb-30 trm-hsmb-font">
+                            详解BERT
+                        </h1>
+
+                        
+                            <ul class="trm-breadcrumbs trm-label">
+                                <li>
+                                    <a href="/" class="trm-anima-link">Home</a>
+                                </li>
+                                <li>
+                                    <span>
+                                        2023
+                                    </span
+                                ></li>
+                            </ul>
+                        
+                    </div>
+                    <!-- banner title end -->
+
+                    <!-- scroll hint -->
+                    <a href="#about-triger" data-scroll-to="#about-triger" data-scroll-offset="-130" class="trm-scroll-hint-frame">
+                        <div class="trm-scroll-hint"></div>
+                        <span class="trm-label">Scroll down</span>
+                    </a>
+                    <!-- scroll hint end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner content end -->
+</div>
+    <!-- banner end -->
+    <div class="container">
+        <div class="row">
+            
+                <div id="page-sidebar" class="col-lg-4 hidden-sm">
+                    <!-- main card -->
+                    
+
+<div class="trm-main-card-frame trm-sidebar">
+    <div class="trm-main-card" data-scroll data-scroll-repeat data-scroll-sticky data-scroll-target=".locomotive-scroll__sticky-target" data-scroll-offset="60"> 
+    
+        <div class="trm-user-tabs" id="sidebar-tabs">
+           <div class="trm-tabs-nav trm-mb-40" id="trm-tabs-nav">
+                <div data-to="tabs-user" class="trm-tabs-nav-item">
+                    <i class="iconfont fas fa-user-alt"></i>
+                </div>
+                <div data-to="tabs-toc" class="trm-tabs-nav-item active">
+                    <i class="iconfont fas fa-th-list"></i>
+                </div>
+           </div>
+            <div name="tabs-user" class="trm-tabs-item">
+                <!-- card header -->
+<div class="trm-mc-header">
+    <div class="trm-avatar-frame trm-mb-20">
+        <img alt="Avatar" class="trm-avatar" src="/img/avatar1.jpg">
+    </div>
+    <h5 class="trm-name trm-mb-15">
+        思忖
+    </h5>
+    
+        <div class="trm-label">
+            I&#39;m
+            <span class="trm-typed-text">
+                <!-- Words for theme.user.typedText -->
+            </span>
+        </div>
+    
+</div>
+<!-- card header end -->
+                <!-- sidebar social -->
+
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<div class="trm-social">
+    
+        <a href="https://github.com/pilgrimag" title="github" rel="nofollow" target="_blank">
+            <i class="iconfont fab fa-github"></i>
+        </a>
+    
+</div>
+
+<!-- sidebar social end -->
+                <!-- info -->
+<div class="trm-divider trm-mb-40 trm-mt-40"></div>
+<ul class="trm-table trm-mb-20">
+    
+        <li>
+            <div class="trm-label">
+                地址:
+            </div>
+            <div class="trm-label trm-label-light">
+                冰岛
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                年龄:
+            </div>
+            <div class="trm-label trm-label-light">
+                19
+            </div>
+        </li>
+    
+        <li>
+            <div class="trm-label">
+                城市:
+            </div>
+            <div class="trm-label trm-label-light">
+                武汉
+            </div>
+        </li>
+    
+</ul>
+<!-- info end -->
+
+                
+    <div class="trm-divider trm-mb-40 trm-mt-40"></div>
+    <!-- action button -->
+    <div class="text-center">
+        <a href="mailto:admin@1803578570@qq.com" class="trm-btn">
+            联系我
+            <i class="iconfont far fa-envelope"></i>
+        </a>
+    </div>
+    <!-- action button end -->
+
+            </div>
+            <div name="tabs-toc" class="trm-tabs-item active">
+                <div class="post-toc">
+    <ol class="toc"><li class="toc-item toc-level-1"><a rel="nofollow" class="toc-link" href="#Bert"  data-scroll-to="#Bert"><span class="toc-number">1.</span> <span class="toc-text">Bert</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a rel="nofollow" class="toc-link" href="#多层Transformer"  data-scroll-to="#多层Transformer"><span class="toc-number">1.1.</span> <span class="toc-text">多层Transformer</span></a></li><li class="toc-item toc-level-2"><a rel="nofollow" class="toc-link" href="#BERT的五个关键词：Pre-training、Deep、Bidirectional、Transformer、Language-Understanding"  data-scroll-to="#BERT的五个关键词：Pre-training、Deep、Bidirectional、Transformer、Language-Understanding"><span class="toc-number">1.2.</span> <span class="toc-text">BERT的五个关键词：Pre-training、Deep、Bidirectional、Transformer、Language Understanding</span></a></li><li class="toc-item toc-level-2"><a rel="nofollow" class="toc-link" href="#BERT模型解析"  data-scroll-to="#BERT模型解析"><span class="toc-number">1.3.</span> <span class="toc-text">BERT模型解析</span></a></li></ol></li></ol>
+</div>
+            </div>
+        </div>
+    
+    </div>
+</div>
+                    <!-- main card end -->
+                </div>
+            
+            <div id="page-content" class="col-lg-8">
+                <div class="trm-content" id="trm-content">
+                    <div data-scroll data-scroll-repeat data-scroll-offset="500" id="about-triger"></div>
+
+                    <div id="post-info" class="row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            07/20
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            14:27
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            John Doe
+        </div>
+    </div>
+</div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <h1 id="Bert"><a href="#Bert" class="headerlink" title="Bert"></a>Bert</h1><p><strong>多层transformer的双向两阶段式语言模型</strong><br>BERT模型的全称是：BidirectionalEncoder Representations from Transformer。从名字中可以看出，BERT模型的目标是利用大规模无标注语料训练、获得文本的包含丰富语义信息的Representation，即：文本的语义表示，然后将文本的语义表示在特定NLP任务中作微调，最终应用于该NLP任务。</p>
+<h2 id="多层Transformer"><a href="#多层Transformer" class="headerlink" title="多层Transformer"></a>多层Transformer</h2><p>BERT模型就是基于Transformer模型，但是BERT模型只用了Transformer模型的Encoder部分，多层Transformer也就是多层Encoder的堆叠。</p>
+<p>BERT模型的输入部分由三部分组成：</p>
+<ul>
+<li>Token Embedding：单词的Embedding</li>
+<li>Segment Embedding：句子的Embedding，BERT的训练数据都是<strong>由两个句子构成</strong>的，那么每个句子都有一个句子整体的embedding项对应给每个单词</li>
+<li>Position Embedding：位置的Embedding，NLP中单词顺序是很重要的特征，需要在这里对位置信息进行编码，用来表示每个单词在输入序列中的位置信息</li>
+</ul>
+<p>Google发布了两个版本的BERT，一个Base版，一个Large版。<br>Base版本：L(Layers)&#x3D;12，H(Hidden)&#x3D;768，A(attention head)&#x3D;12，Total Parameters&#x3D;110M<br>Large版本：L(Layers)&#x3D;24，H(Hidden)&#x3D;1024，A(attention head)&#x3D;16，Total Parameters&#x3D;340M</p>
+<p>可以看到，无论是哪种版本，其模型参数总数都达到了百兆之多。这么多参数需要训练，海量的训练语料是必不可少的。如果全部用人力标注的方法，来制作训练数据，其人力成本太大。</p>
+<h2 id="BERT的五个关键词：Pre-training、Deep、Bidirectional、Transformer、Language-Understanding"><a href="#BERT的五个关键词：Pre-training、Deep、Bidirectional、Transformer、Language-Understanding" class="headerlink" title="BERT的五个关键词：Pre-training、Deep、Bidirectional、Transformer、Language Understanding"></a>BERT的五个关键词：Pre-training、Deep、Bidirectional、Transformer、Language Understanding</h2><p>BERT这篇论文的标题为：《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》<br>其中：</p>
+<ul>
+<li>pre-training：可以用文章预训练通用模型，然后再根据具体应用，用supervised训练数据，精加工(fine-tuning)模型，使之适用于具体应用。</li>
+<li>Deep Bidirectional Transformers：假如给一个句子 “能实现语言表征<code>mask</code>的模型”，遮盖住其中“目标”一词。从前往后预测<code>mask</code>，也就是用“能&#x2F;实现&#x2F;语言&#x2F;表征”，来预测<code>mask</code>；或者，从后往前预测<code>mask</code>，也就是用“模型&#x2F;的”，来预测<code>mask</code>，称之为单向预测<strong>unidirectional</strong>。单向预测，不能完整地理解整个语句的语义。于是研究者们尝试双向预测。把从前往后，与从后往前的两个预测，拼接在一起 <code>mask1/mask2</code>，这就是双向预测 <strong>bi-directional</strong>。BERT 的作者认为，<strong>bi-directional</strong>仍然不能完整地理解整个语句的语义，更好的办法是用上下文全向来预测<code>mask</code>，也就是用 “能&#x2F;实现&#x2F;语言&#x2F;表征&#x2F;..&#x2F;的&#x2F;模型”，来预测<code>mask</code>。BERT 作者把上下文全向的预测方法，称之为<strong>deep bi-directional</strong>。如何来实现上下文全向预测呢？BERT 的作者建议使用<strong>Transformer模型</strong>。</li>
+</ul>
+<p>这一模型的核心是<strong>聚焦</strong>机制。对于一个语句，可以同时采用多个聚焦点，而不必局限于从前往后，或从后往前的串行方式处理。</p>
+<p>为了正确地选择模型的结构和参数，保障模型能够准确理解语句的意义，BERT对于数据集作了以下处理：</p>
+<ol>
+<li>在一篇文章中，随机选取15%的词汇进行遮盖，让模型根据上下文全向预测被遮盖的词；其中，80%被<code>mask</code>掩码标记，10%做词汇替换，10%不做任何处理；</li>
+<li>从上述的若干篇文章中，挑选若干万对语句，其中一半为连续两条上下文语句，另外一半为不连续的语句，让模型识别哪些是连续的，哪些是不连续的。</li>
+</ol>
+<p>这两步训练结合在一起，称为预训练pre-training。训练结束后的transformer模型，包括它的参数，是作者期待的通用语言表征模型。</p>
+<h2 id="BERT模型解析"><a href="#BERT模型解析" class="headerlink" title="BERT模型解析"></a>BERT模型解析</h2><ul>
+<li>遮蔽语言模型（masked language model，MLM）<br>用于克服单向性局限，允许表征融合左右两侧的语境，从而预训练一个深度双向transformer</li>
+<li>下一句预测（next sentence prediction，NSP）</li>
+</ul>
+
+</article>
+    
+    
+</div>
+<div id="post-next-prev" class="row">
+    <div class="col-lg-12">
+        <!-- title -->
+        <h5 class="trm-title-with-divider">
+            其他文章
+            <span data-number="02"></span>
+        </h5>
+    </div>
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el" data-scroll="" data-scroll-offset="40">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/2023/07/20/LLM%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">LLM发展历程</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>23/07/20</li>
+                <li>15:32</li>
+                <li>深度学习</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el" data-scroll="" data-scroll-offset="40">
+        <div class="trm-older-publication">
+            
+            <a class="trm-op-top trm-anima-link" href="/2023/07/20/%E8%AF%A6%E8%A7%A3transformer/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">详解transformer</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>23/07/20</li>
+                <li>14:12</li>
+                <li>深度学习</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+</div>
+
+    
+
+
+
+                    <div class="trm-divider footer-divider"></div>
+
+                    <!-- footer -->
+                    <footer class="trm-scroll-animation" data-scroll data-scroll-offset="50">
+
+    
+
+    
+        <div class="trm-footer-item">
+            <span>© 2023- 2023</span>
+            <span class="footer-separator"data-separator=" · "></span>
+            <span class="trm-accent-color">思忖</span>
+        </div>
+    
+
+    
+        <div class="trm-footer-item">
+            <span>
+                由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v6.3.0
+            </span>
+            <span class="footer-separator" data-separator=" | "></span>
+            <span> 
+                主题 - 
+                <a rel="noopener" href='https://github.com/MaLuns/hexo-theme-async' target='_blank'>Async</a>
+                v2.0.3
+            </span>
+        </div>
+      
+
+    
+        <div class="trm-footer-item">
+            博客已在代码中扑腾 <span id="since" class="trm-accent-color"></span> 天
+        </div>
+     
+
+    
+        <div class="trm-footer-item">
+            最想戒掉的是执念
+        </div>
+     
+</footer>
+
+<script>
+    function show_date_time () {
+        var BirthDay = new Date("03/17/2023 12:00:00");
+        var today = new Date();
+        var timeold = (today.getTime() - BirthDay.getTime());
+        var msPerDay = 24 * 60 * 60 * 1000
+        var day = Math.floor(timeold / msPerDay)
+        since.innerHTML = day
+    }
+    show_date_time()
+</script>
+ 
+                    <!-- footer end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- body end -->
+
+            <div class="trm-fixed-container" data-scroll data-scroll-sticky data-scroll-target=".locomotive-scroll__sticky-target" data-scroll-offset="-10">
+    
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
+    
+    <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
+        <i class="iconfont fas fa-arrow-up"></i>
+    </div>
+</div>
+          </div>
+        </div>
+      </div>
+      <!-- scroll container end -->
+
+  </div>
+  <!-- app wrapper end -->
+
+  
+<div class="trm-search-popup">
+    <div class="trm-search-header">
+        <span class="trm-search-popup-btn-close">
+            <i class="iconfont fas fa-times"></i>
+        </span>
+    </div>
+    <div class="form trm-search-form">
+        <input class="trm-search-input" type="text" placeholder="搜索...">
+    </div>
+    <div class="trm-search-result-container">
+
+    </div>
+</div>
+
+  <!-- Plugin -->
+
+
+
+
+    
+    
+<script src="https://unpkg.com/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+
+    
+<script src="https://unpkg.com/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    
+
+    
+        <script src="/js/plugins/typing.js?v=2.0.3"></script>
+    
+
+    
+
+    <!-- 数学公式 -->
+    
+
+    <!-- 评论插件 -->
+    
+        
+
+        
+    
+
+
+
+<!-- CDN -->
+
+
+    
+
+    
+
+    
+
+
+
+
+    <!-- Service Worker -->
+    
+    <!-- baidu push -->
+    
+
+
+<script id="async-script" src="/js/main.js?v=2.0.3"></script>
+
+</body>
+
+</html>
