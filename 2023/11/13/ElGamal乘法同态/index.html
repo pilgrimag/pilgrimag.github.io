@@ -7,16 +7,21 @@
 <meta name="full-screen" content="yes">
 <meta name="theme-color" content="#317EFB" />
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" name="viewport">
-<meta property="og:type" content="website">
-<meta property="og:title" content="思忖的小窝">
-<meta property="og:url" content="http://pilgrimag.github.io/tags/OS/index.html">
+<meta name="description" content="抛硬币协议假设有两个人A和B，他们在玩抛硬币游戏，他们均采用ElGamal加密算法，将各自抛一次硬币的结果$g_a$和$g_b$进行加密，然后将密文传送给第三方T，由第三方T进行解密，并公布解密后$g_a$和$g_b$做异或运算后的结果。其中，密钥均由第三方T提供。现在假设B能够看到A传输给T的密文，请问B应该如何修改自己的明文，使得最终的结果由B来控制？ ElGamal乘法同态ElGamal加密">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ElGamal乘法同态">
+<meta property="og:url" content="http://pilgrimag.github.io/2023/11/13/ElGamal%E4%B9%98%E6%B3%95%E5%90%8C%E6%80%81/index.html">
 <meta property="og:site_name" content="思忖的小窝">
+<meta property="og:description" content="抛硬币协议假设有两个人A和B，他们在玩抛硬币游戏，他们均采用ElGamal加密算法，将各自抛一次硬币的结果$g_a$和$g_b$进行加密，然后将密文传送给第三方T，由第三方T进行解密，并公布解密后$g_a$和$g_b$做异或运算后的结果。其中，密钥均由第三方T提供。现在假设B能够看到A传输给T的密文，请问B应该如何修改自己的明文，使得最终的结果由B来控制？ ElGamal乘法同态ElGamal加密">
 <meta property="og:locale">
+<meta property="article:published_time" content="2023-11-13T07:58:11.000Z">
+<meta property="article:modified_time" content="2023-11-13T07:59:58.743Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="CN">
 <meta name="twitter:card" content="summary">
 
 
-<title >思忖的小窝</title>
+<title >ElGamal乘法同态</title>
 
 <!-- Favicon -->
 
@@ -48,6 +53,8 @@
 
     
     
+<link rel="stylesheet" href="https://unpkg.com/katex@latest/dist/katex.min.css">
+
 
 
 
@@ -62,7 +69,7 @@
 
 <!-- Variable -->
 <script>window.ASYNC_CONFIG = {"hostname":"pilgrimag.github.io","author":"John Doe","root":"/","typed_text":["A Fish","A Student"],"theme_version":"2.0.3","theme":{"switch":true,"default":"style-light"},"favicon":{"logo":"/img/favicon.ico","icon16":"/img/favicon.ico","icon32":"/img/favicon.ico","appleTouchIcon":"/img/apple-touch-icon.png","webmanifest":"/site.webmanifest","visibilitychange":true,"hidden":"failure.ico","showText":"(/≧▽≦/)咦！又好了！","hideText":"(●—●)喔哟，崩溃啦！"},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）","author":"本文作者：","copyright_link":"本文链接：","copyright_license_title":"版权声明：","copyright_license_content":"本博客所有文章除特别声明外，均默认采用 undefined 许可协议。","copy_success":"复制成功","copy_failure":"复制失败","open_read_mode":"进入阅读模式","exit_read_mode":"退出阅读模式","notice_outdate_message":"距离上次更新已经 undefined 天了, 文章内容可能已经过时。","just":"刚刚","min":"分钟前","hour":"小时前","day":"天前","month":"个月前"},"swup":false,"plugin":{"flickr_justified_gallery":"https://unpkg.com/flickr-justified-gallery@latest/dist/fjGallery.min.js"},"icons":{"sun":"far fa-sun","moon":"far fa-moon","play":"fas fa-play","email":"far fa-envelope","next":"fas fa-arrow-right","calendar":"far fa-calendar-alt","clock":"far fa-clock","user":"far fa-user","back_top":"fas fa-arrow-up","close":"fas fa-times","search":"fas fa-search","reward":"fas fa-hand-holding-usd","user_tag":"fas fa-user-alt","toc_tag":"fas fa-th-list","read":"fas fa-book-reader","arrows":"fas fa-arrows-alt-h","double_arrows":"fas fa-angle-double-down","copy":"fas fa-copy"},"icontype":"font","highlight":{"plugin":"highlighjs","theme":true,"copy":true,"lang":true,"title":"default","height_limit":200}};</script>
-<script id="async-page-config">window.PAGE_CONFIG = {"isPost":false,"isHome":false,"postUpdate":"2023-12-27 00:05:27"};</script>
+<script id="async-page-config">window.PAGE_CONFIG = {"isPost":true,"isHome":false,"postUpdate":"2023-11-13 15:59:58"};</script>
 
 <!-- Theme mode css -->
 <link data-swup-theme rel="stylesheet" href="/css/index.css?v=2.0.3" id="trm-switch-style">
@@ -218,7 +225,8 @@
             <!-- top bar end -->
 
             <!-- body -->
-            <div class="trm-content-start">
+            
+<div class="trm-content-start">
     <!-- banner -->
     <div class="trm-banner" data-scroll data-scroll-direction="vertical">
     
@@ -239,10 +247,10 @@
                     <!-- banner title -->
                     <div class="trm-banner-text ">
                         <div class="trm-label trm-mb-20">
-                            Some
+                            NEWS LETTER
                         </div>
                         <h1 class="trm-mb-30 trm-hsmb-font">
-                            借一方净土
+                            ElGamal乘法同态
                         </h1>
 
                         
@@ -252,7 +260,7 @@
                                 </li>
                                 <li>
                                     <span>
-                                        tags
+                                        2023
                                     </span
                                 ></li>
                             </ul>
@@ -284,7 +292,17 @@
 <div class="trm-main-card-frame trm-sidebar">
     <div class="trm-main-card" data-scroll data-scroll-repeat data-scroll-sticky data-scroll-target=".locomotive-scroll__sticky-target" data-scroll-offset="60"> 
     
-        <!-- card header -->
+        <div class="trm-user-tabs" id="sidebar-tabs">
+           <div class="trm-tabs-nav trm-mb-40" id="trm-tabs-nav">
+                <div data-to="tabs-user" class="trm-tabs-nav-item">
+                    <i class="iconfont fas fa-user-alt"></i>
+                </div>
+                <div data-to="tabs-toc" class="trm-tabs-nav-item active">
+                    <i class="iconfont fas fa-th-list"></i>
+                </div>
+           </div>
+            <div name="tabs-user" class="trm-tabs-item">
+                <!-- card header -->
 <div class="trm-mc-header">
     <div class="trm-avatar-frame trm-mb-20">
         <img alt="Avatar" class="trm-avatar" src="/img/avatar1.jpg">
@@ -302,7 +320,7 @@
     
 </div>
 <!-- card header end -->
-        <!-- sidebar social -->
+                <!-- sidebar social -->
 
 <div class="trm-divider trm-mb-40 trm-mt-40"></div>
 <div class="trm-social">
@@ -314,7 +332,7 @@
 </div>
 
 <!-- sidebar social end -->
-        <!-- info -->
+                <!-- info -->
 <div class="trm-divider trm-mb-40 trm-mt-40"></div>
 <ul class="trm-table trm-mb-20">
     
@@ -348,7 +366,7 @@
 </ul>
 <!-- info end -->
 
-        
+                
     <div class="trm-divider trm-mb-40 trm-mt-40"></div>
     <!-- action button -->
     <div class="text-center">
@@ -359,6 +377,13 @@
     </div>
     <!-- action button end -->
 
+            </div>
+            <div name="tabs-toc" class="trm-tabs-item active">
+                <div class="post-toc">
+    <ol class="toc"><li class="toc-item toc-level-1"><a rel="nofollow" class="toc-link" href="#抛硬币协议"  data-scroll-to="#抛硬币协议"><span class="toc-number">1.</span> <span class="toc-text">抛硬币协议</span></a></li><li class="toc-item toc-level-1"><a rel="nofollow" class="toc-link" href="#ElGamal乘法同态"  data-scroll-to="#ElGamal乘法同态"><span class="toc-number">2.</span> <span class="toc-text">ElGamal乘法同态</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a rel="nofollow" class="toc-link" href="#ElGamal加密算法"  data-scroll-to="#ElGamal加密算法"><span class="toc-number">2.1.</span> <span class="toc-text">ElGamal加密算法</span></a></li><li class="toc-item toc-level-2"><a rel="nofollow" class="toc-link" href="#ElGamal乘法同态-1"  data-scroll-to="#ElGamal乘法同态-1"><span class="toc-number">2.2.</span> <span class="toc-text">ElGamal乘法同态</span></a></li></ol></li><li class="toc-item toc-level-1"><a rel="nofollow" class="toc-link" href="#如何控制结果"  data-scroll-to="#如何控制结果"><span class="toc-number">3.</span> <span class="toc-text">如何控制结果</span></a></li><li class="toc-item toc-level-1"><a rel="nofollow" class="toc-link" href="#总结"  data-scroll-to="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+</div>
+            </div>
+        </div>
     
     </div>
 </div>
@@ -369,131 +394,98 @@
                 <div class="trm-content" id="trm-content">
                     <div data-scroll data-scroll-repeat data-scroll-offset="500" id="about-triger"></div>
 
-                    <div class="row">
-    <div class="col-lg-12">
-        <div class="trm-card">
-            <div style="padding: 0 20px;">
-                
-                    <ul class="row trm-tag-list trm-list" itemprop="keywords"><li class="col-lg-4 trm-list-item"><a class="tag-list-link" href="/tags/CN/" rel="tag">CN</a><span class="tag-list-count">2</span></li><li class="col-lg-4 trm-list-item"><a class="tag-list-link" href="/tags/CP/" rel="tag">CP</a><span class="tag-list-count">1</span></li><li class="col-lg-4 trm-list-item"><a class="tag-list-link" href="/tags/OS/" rel="tag">OS</a><span class="tag-list-count">3</span></li><li class="col-lg-4 trm-list-item"><a class="tag-list-link" href="/tags/deep-learning/" rel="tag">deep learning</a><span class="tag-list-count">9</span></li><li class="col-lg-4 trm-list-item"><a class="tag-list-link" href="/tags/information-hidding/" rel="tag">information hidding</a><span class="tag-list-count">2</span></li></ul>
-                
-            </div>
+                    <div id="post-info" class="row hidden-sm">
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-calendar-alt trm-icon"></i><br>
+            11/13
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-clock trm-icon"></i><br>
+            15:58
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div id="post-author" class="trm-card trm-label trm-label-light text-center">
+            <i class="iconfont far fa-user trm-icon"></i><br>
+            John Doe
         </div>
     </div>
 </div>
+<div class="trm-card ">
+    <article id="article-container" class="trm-publication">
+    <h1 id="抛硬币协议"><a href="#抛硬币协议" class="headerlink" title="抛硬币协议"></a>抛硬币协议</h1><p>假设有两个人A和B，他们在玩抛硬币游戏，他们均采用ElGamal加密算法，将各自抛一次硬币的结果$g_a$和$g_b$进行加密，然后将密文传送给第三方T，由第三方T进行解密，并公布解密后$g_a$和$g_b$做异或运算后的结果。其中，密钥均由第三方T提供。现在假设B能够看到A传输给T的密文，请问B应该如何修改自己的明文，使得最终的结果由B来控制？</p>
+<h1 id="ElGamal乘法同态"><a href="#ElGamal乘法同态" class="headerlink" title="ElGamal乘法同态"></a>ElGamal乘法同态</h1><h2 id="ElGamal加密算法"><a href="#ElGamal加密算法" class="headerlink" title="ElGamal加密算法"></a>ElGamal加密算法</h2><p><strong>准备</strong>：</p>
+<p>随机地选择一个大素数$p$，且要求$p-1$有大素数因子。再选择一个模$p$的本原元。<strong>将$p$和$\alpha$公开作为密码的基础参数</strong>。</p>
+<p>密钥生成：</p>
+<ul>
+<li>随机选择一个整数$d$作为自己保密的解密钥，$2 \leq d \leq p-2$；</li>
+<li>用户计算$y &#x3D; \alpha ^ d mod p$，并取$y$作为自己公开的加密钥。</li>
+</ul>
+<p><strong>加密</strong>：</p>
+<p>将明文消息$M(0 \leq M \leq p-1)$加密成密文的过程如下：</p>
+<ul>
+<li>随机选取一个整数$k, 2 \leq k \leq p-2$；</li>
+<li>计算<br>$$\begin{aligned} U &amp;&#x3D; y^k mod p \ C_1 &amp;&#x3D; \alpha ^ k mod p \ C_2 &amp;&#x3D; UM mod p \end{aligned}$$</li>
+<li>取$C &#x3D; (C_1, C_2)$作为密文。</li>
+</ul>
+<p><strong>解密</strong>：</p>
+<p>将密文$(C_1, C_2)$解密的过程如下：</p>
+<ul>
+<li>计算$V &#x3D; C_1^d mod p$</li>
+<li>计算$M &#x3D; C_2V^{-1} mod p$</li>
+<li>获得明文。</li>
+</ul>
+<h2 id="ElGamal乘法同态-1"><a href="#ElGamal乘法同态-1" class="headerlink" title="ElGamal乘法同态"></a>ElGamal乘法同态</h2><p>假设有明文$x_a$，$x_b$，用同样的$p, \alpha$进行加密成密文$c_a, c_b$，有：</p>
+<p>$$c_{a1} &#x3D; \alpha ^ {k_a} mod p$$<br>$$c_{a2} &#x3D; y ^ {k_a} x_a mod p $$<br>$$c_{b1} &#x3D; \alpha ^ {k_b} mod p $$<br>$$c_{b2} &#x3D; y ^ {k_b} x_b mod p $$<br>$$c_{a1} * c_{b1} &#x3D; \alpha ^ {k_a + k_b} mod p $$<br>$$c_{a2} * c_{b2} &#x3D; x_a * x_b * y ^ {k_a + k_b} mod p $$</p>
+<p>所以，可以看到$c_a * c_b$相当于用随机数$k_a + k_b$对$x_1 * x_2$加密。</p>
+<h1 id="如何控制结果"><a href="#如何控制结果" class="headerlink" title="如何控制结果"></a>如何控制结果</h1><p>对于A和B而言，如果B能观察到A的结果，则B首先对自己的信息$x_b$进行加密，获得自己的密文$c_b$，然后将$c_b$与$c_a$相乘，获得结果$C$，然后传送给T，则此时<strong>B传送的是对$x_1 * x_2$加密的密文。</strong></p>
+<p>当T获得A和B传送的密文，并对结果进行解密后异或运算时，<strong>其计算的式子为$x_1 \oplus (x_1 * x_2)$。</strong></p>
+<ul>
+<li>当$x_2 &#x3D; 0$时，该式结果为$x_1$；</li>
+<li>当$x_2 &#x3D; 1$时，该式结果为$0$。</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>虽然这个计算结果好像没办法得到$x_2$本身，也就是说无法得到B本身传递的信息选项……假设$x_1$和$x_2$的取值为${0, 1}$，这么计算的话，结果为$0$的概率好像会更高一点？如果定义<strong>最终的结果由B来控制</strong>表示B想要$0$就输出$0$，想要$1$就输出$1$的话，貌似是不能达到后半句话的，但是另一个层面来说也算是<strong>控制结果</strong>了……</p>
 
-<!-- history -->
-
-<div class="row">
+</article>
+    
+    
+</div>
+<div id="post-next-prev" class="row">
     <div class="col-lg-12">
         <!-- title -->
         <h5 class="trm-title-with-divider">
-            
-                OS
-            
-            <span data-number="01"></span>
+            其他文章
+            <span data-number="02"></span>
         </h5>
     </div>
-    <div class="col-lg-12">
-        <!-- timeline -->
-        <div class="trm-timeline">
+    
+    
+        <div class="col-lg-6">
+    <div class="trm-older-publications-card trm-scroll-animation trm-active-el" data-scroll="" data-scroll-offset="40">
+        <div class="trm-older-publication">
             
-            <div class="trm-timeline-item trm-scroll-animation" data-scroll data-scroll-offset="40">
-                <div class="trm-timeline-mark-light"></div>
-                <div class="trm-timeline-mark"></div>
-                <div class="trm-a trm-timeline-content more">
-                    
-                        <div class="trm-card-header">
-                            <div class="trm-left-side">
-                                <h6>
-                                    <a href="/2023/10/10/OS%E5%AE%9E%E9%AA%8C1-%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="trm-anima-link">
-                                        OS实验1-实验环境搭建
-                                    </a>
-                                </h6>
-                                <div class="trm-text-sm trm-accent-color trm-mt-15">
-                                    <ul class="trm-card-data trm-label ">
-                                        <li class="trm-accent-color">10/10</li>
-                                        <li class="trm-accent-color">22:37</li>
-                                        
-                                        <li>2.1k</li>
-                                        
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    
-                </div>
-            </div>
-            
-            <div class="trm-timeline-item trm-scroll-animation" data-scroll data-scroll-offset="40">
-                <div class="trm-timeline-mark-light"></div>
-                <div class="trm-timeline-mark"></div>
-                <div class="trm-a trm-timeline-content more">
-                    
-                        <div class="trm-card-header">
-                            <div class="trm-left-side">
-                                <h6>
-                                    <a href="/2023/03/19/%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0Fibonacci%E5%BA%8F%E5%88%97/" class="trm-anima-link">
-                                        编写一个多线程程序实现Fibonacci序列
-                                    </a>
-                                </h6>
-                                <div class="trm-text-sm trm-accent-color trm-mt-15">
-                                    <ul class="trm-card-data trm-label ">
-                                        <li class="trm-accent-color">03/19</li>
-                                        <li class="trm-accent-color">14:24</li>
-                                        
-                                        <li>2.1k</li>
-                                        
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    
-                </div>
-            </div>
-            
-            <div class="trm-timeline-item trm-scroll-animation" data-scroll data-scroll-offset="40">
-                <div class="trm-timeline-mark-light"></div>
-                <div class="trm-timeline-mark"></div>
-                <div class="trm-a trm-timeline-content more">
-                    
-                        <div class="trm-card-header">
-                            <div class="trm-left-side">
-                                <h6>
-                                    <a href="/2023/03/18/Linux%E7%BC%96%E8%AF%91%E5%86%85%E6%A0%B8%E5%B9%B6%E6%B7%BB%E5%8A%A0%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" class="trm-anima-link">
-                                        Linux编译内核并添加系统调用
-                                    </a>
-                                </h6>
-                                <div class="trm-text-sm trm-accent-color trm-mt-15">
-                                    <ul class="trm-card-data trm-label ">
-                                        <li class="trm-accent-color">03/18</li>
-                                        <li class="trm-accent-color">17:08</li>
-                                        
-                                        <li>1.9k</li>
-                                        
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    
-                </div>
-            </div>
-            
+            <a class="trm-op-top trm-anima-link" href="/2023/11/03/%E4%BF%A1%E6%81%AF%E9%9A%90%E8%97%8F%E5%AE%9E%E9%AA%8C2-%E5%AE%89%E5%85%A8%E9%9A%90%E5%86%99%E5%AF%B9%E6%8A%97/">
+                <span class="trm-op-cover">
+                    <img alt="cover" class="no-fancybox" src="/img/block.jpg">
+                </span>
+                <h6 class="trm-op-title">信息隐藏实验2-安全隐写对抗</h6>
+            </a>
+            <div class="trm-divider trm-mb-15 trm-mt-20"></div>
+            <ul class="trm-card-data trm-label">
+                <li>23/11/03</li>
+                <li>16:16</li>
+                <li>实验</li>
+            </ul>
         </div>
-        <!-- timeline end -->
     </div>
 </div>
+    
+</div>
 
-<!-- history end -->
-
-
-    <div class="trm-pagination">
-        <span class="page-number current">1</span>
-    </div>
-
-
+    
 
 
 
@@ -562,6 +554,10 @@
 
             <div class="trm-fixed-container" data-scroll data-scroll-sticky data-scroll-target=".locomotive-scroll__sticky-target" data-scroll-offset="-10">
     
+        <div class="trm-fixed-btn" data-title="阅读模式" onclick="asyncFun.switchReadMode()">
+            <i class="iconfont fas fa-book-reader"></i>
+        </div>
+    
     
     <div id="trm-back-top" class="trm-fixed-btn" data-title="回到顶部">
         <i class="iconfont fas fa-arrow-up"></i>
@@ -612,8 +608,35 @@
 
     <!-- 数学公式 -->
     
+        
+<script src="https://unpkg.com/katex@latest/dist/katex.min.js" data-swup-reload-script></script>
+
+        
+            
+<script src="https://unpkg.com/katex@latest/dist/contrib/copy-tex.min.js" data-swup-reload-script></script>
+
+        
+        
+<script src="https://unpkg.com/katex@latest/dist/contrib/auto-render.min.js" data-swup-reload-script></script>
+
+        <script data-swup-reload-script>
+              window.renderMathInElement(document.body, {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '$', right: '$', display: false },
+                    { left: '\\(', right: '\\)', display: false },
+                    { left: '\\[', right: '\\]', display: true },
+                ],
+                ...{},
+            })
+        </script>
+    
 
     <!-- 评论插件 -->
+    
+        
+
+        
     
 
 
