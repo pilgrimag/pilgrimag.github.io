@@ -424,7 +424,7 @@
 </div>
 <div class="trm-card ">
     <article id="article-container" class="trm-publication">
-    <h1 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h1><p>Transformer由论文《<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1706.03762">Attention is All You Need</a>》提出，现在是谷歌云TPU推荐的参考模型。论文相关的Tensorflow的代码可以从GitHub获取，其作为Tensor2Tensor包的一部分。哈佛的NLP团队也实现了一个基于PyTorch的版本，并注释该论文。</p>
+    <link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h1><p>Transformer由论文《<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1706.03762">Attention is All You Need</a>》提出，现在是谷歌云TPU推荐的参考模型。论文相关的Tensorflow的代码可以从GitHub获取，其作为Tensor2Tensor包的一部分。哈佛的NLP团队也实现了一个基于PyTorch的版本，并注释该论文。</p>
 <p>下面我们来介绍transformer中的几个基本概念。</p>
 <h1 id="encoder-decoder-编码解码结构"><a href="#encoder-decoder-编码解码结构" class="headerlink" title="encoder-decoder  编码解码结构"></a>encoder-decoder  编码解码结构</h1><p>用于处理序列-序列问题<br>输入序列X  语义编码C  输出序列Y<br>编码和解码方式有很多，<br>如：RNN&#x2F;LSTM&#x2F;GRU&#x2F;BiRNN&#x2F;BiLSTM&#x2F;BiGRU<br>可以任意组合</p>
 <p><strong>基于encoder-decoder框架的主要模型有：seq2seq、transformer</strong><br>seq2seq有两种编解码方式<br>两种方式都不好，无法提现上下文关系，损失信息</p>
